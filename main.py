@@ -17,9 +17,31 @@ gameDisplay = pygame.display.set_mode((game_x, game_y))  # TODO change to relati
 pygame.display.set_caption('GladiatorRPG')
 clock = pygame.time.Clock()
 
+
 class Scene:
     # for generic scene creation.
     def __init__(self):
+        self.ButtonManager = ButtonHandler()
+        self.GraphicManager = GraphicHandler()
+
+
+class Combat(Scene):
+    def __init__(self):
+        super().__init__()
+
+
+class Graphic:
+    pass
+
+
+class GraphicHandler:
+    """handle a group of graphics
+    """
+    def __init__(self):
+        self.graphic_list = []
+
+    def add_graphic(self):
+        pass  # TODO
 
 
 class Button:
@@ -73,8 +95,9 @@ class ButtonHandler:
 gameDisplay.fill(white)
 button_handler = ButtonHandler()
 #  button_handler.add_button(game_x * .15, game_y * .8, game_x * .2, game_y * .9, "asdf", blue)
-button_handler.add_button(5, game_y * 0.8, 50, game_y * 0.85, "New Game", blue)
-button_handler.add_button(51, game_y * 0.8, 101, game_y * 0.85, "Begin Combat", green)
+button_handler.add_button(5, game_y * 0.8, 100, game_y * 0.85, "New Game", blue)
+button_handler.add_button(100, game_y * 0.8, 171, game_y * 0.85, "Begin Combat", green)
+imageTest = pygame.image.load('Assets/Defualt_Image.png')
 
 
 exit_game = False
@@ -95,6 +118,8 @@ while not exit_game:
                     for button in button_handler.button_list:
                         if button.within(mouse_x, mouse_y):
                             button.action()
+
+    gameDisplay.blit(imageTest, [50, 50])
 
     pygame.display.update()
     clock.tick(60)
