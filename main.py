@@ -17,12 +17,17 @@ gameDisplay = pygame.display.set_mode((game_x, game_y))  # TODO change to relati
 pygame.display.set_caption('GladiatorRPG')
 clock = pygame.time.Clock()
 
+class Scene:
+    # for generic scene creation.
+    def __init__(self):
+
 
 class Button:
+    # all a button is is a rectangle, some text, and an action on left click
+
     def __init__(self, x_1, y_1, x_2, y_2, text, color):
         self.name = text
-        #pygame.draw.rect(gameDisplay, color, (x_1, y_1,  x_2, y_2))
-        # print(text)
+
         self.x_1 = x_1
         self.x_2 = x_2
         self.y_1 = y_1
