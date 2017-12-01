@@ -1,42 +1,69 @@
 import random
 
+
 class Card:
-    def __init__(self, name, description, consumable):
+    def __init__(self, name, description, consumable, is_damage, damage_amount, is_heal, heal_amount, card_asset):  # TODO add kwargs
         self.name = name
         self.description = description
         self.is_consumable = consumable
+        self.is_damage = is_damage
+        self.is_heal = is_heal
+        self.card_asset = card_asset
+
+        self.damage_amount = damage_amount
+        self.heal_amount = heal_amount
         
-    def use_card(self):
-        raise NotImplementedError
+    def use_card(self, player, enemy):
+        if self.is_damage:
+            enemy.stats.health -= self.damage_amount
+        if self.is_heal:
+            player.stats.health += self.heal_amount
 
 
 class ConsumableCard(Card):
-    def __init__(self, name, description):
-        super().__init__(name, description, True)
-    
-    def use_card(self):
-        #TODO
-        print("consumable")
+    def __init__(self, name, description, heal_amount, asset):
+        super().__init__(name, description, True, False, 0, True, heal_amount, asset)
+
+
+class Stats:
+    def __init__(self, level=0, health=10, _class=None):
+        self.level = level
+        self.health = health
+        self._class = _class
 
 
 class WeaponCard(Card):
-    def __init__(self, name, description):
-        super().__init__(name, description, False)
-        
-    def use_card(self):
-        #TODO
-        print("Weapon")
+    def __init__(self, name, description, damage_amount, asset):
+        super().__init__(name, description, False,  True, damage_amount, False, 0, asset)
+
+
+class Inventory:
+    def __init__(self):
+        self.currency = 0
 
 
 class Unit:
-    def __init__(self):
+    def __init__(self, name):
+        self.name = name
         self.deck = Deck()
+        self.stats = Stats()
+        self.inventory = Inventory()
+
+
+class Slave(Unit):
+    def __init__(self, name):
+        super().__init__(name)
+
+
+class Gladiator(Unit):
+    def __init__(self, name):
+        super().__init__(name)
 
 
 class Deck:
     def __init__(self):
         self.deck = []  # list of cards
-        self._default_card = WeaponCard("Fist", "TODO",)  # TODO, abstract this here
+        self._default_card = WeaponCard("Fist", "TODO", .5, "TODO")  # TODO, abstract this here
 
     def add_card(self, card):
         self.deck.append(card)
@@ -83,13 +110,13 @@ class Combat:
         pass
 
 
-#test stuff
+# Test Stuff
 
-p1 = Unit()
-p2 = Unit()
+p1 = Gladiator("Me")
+p2 = Slave("You")
 
-c1 = ConsumableCard("Pie", "A freshly baked apple pie")
-w1 = WeaponCard("Sword", "A forged weapon the length of your arm")
+c1 = ConsumableCard("Pie", "A freshly baked apple pie", 2, "TODO")
+w1 = WeaponCard("Sword", "A forged weapon the length of your arm", 2, "TODO")
 
 p1.deck.add_card(c1)
 p1.deck.add_card(w1)
