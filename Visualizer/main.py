@@ -18,28 +18,49 @@ pygame.display.set_caption('GladiatorRPG')
 clock = pygame.time.Clock()
 
 
-class Scene:
-    # for generic scene creation.
-    def __init__(self):
-        # Add UI element handlers here as I need them
-        self.ButtonManager = ButtonHandler()
-        self.GraphicManager = GraphicHandler()
-
-    def draw_scene(self):
-        pass
-
-
-class Combat(Scene):
-    def __init__(self):
-        super().__init__()
-
-
 class Handler:
     def __init__(self):
         raise NotImplementedError
 
     def draw(self):
         raise NotImplementedError
+
+
+class Scene:
+    # for generic scene creation.
+    def __init__(self, buttonhandler, graphichandler):
+        # Add UI element handlers here as I need them
+        self.button_handler = buttonhandler
+        self.graphic_handler = graphichandler
+
+    def draw_scene(self):
+        self.button_handler.draw_buttons()
+        self.graphic_handler.draw_graphics()
+
+    def draw(self):
+        self.draw_scene()  # TODO probably not needed
+
+
+class SceneHandler(Handler):
+    def __init__(self, screen):
+        self.scene_list = []
+        self.screen = screen
+        self.current_scene = Combat()
+
+    def draw(self):
+        self.current_scene.draw_scene()
+
+    def draw_scene(self):
+        self.draw()
+
+    def add_scene(self, scene):
+        self.scene_list.append(scene)
+
+
+class Combat(Scene):
+    def __init__(self):
+        pass
+        #super().__init__(None, None)
 
 
 class Graphic:
@@ -75,10 +96,9 @@ class GraphicHandler(Handler):
 class Button:
     # all a button is is a rectangle, some text, and an action on left click
 
-    def __init__(self, screen, x_1, y_1, x_2, y_2, text, color):
+    def __init__(self, x_1, y_1, x_2, y_2, text, color):
         self.name = text
         self.color = color
-        self.screen = screen
 
         self.x_1 = x_1
         self.x_2 = x_2
@@ -133,25 +153,34 @@ class ButtonHandler(Handler):
 
 
 gameDisplay.fill(white)
-button_handler = ButtonHandler(gameDisplay)
-#  button_handler.add_button(game_x * .15, game_y * .8, game_x * .2, game_y * .9, "asdf", blue)
-button1 = Button(gameDisplay, 5, game_y * 0.8, 100, game_y * 0.85, "New Game", blue)
-button2 = Button(gameDisplay, 100, game_y * 0.8, 171, game_y * 0.85, "Begin Combat", green)
 
-button_handler.add_button(button1)
-button_handler.add_button(button2)
-# imageTest = pygame.image.load('Assets/Defualt_Image.png')
+
+button_handler1 = ButtonHandler(gameDisplay)
+#  button_handler.add_button(game_x * .15, game_y * .8, game_x * .2, game_y * .9, "asdf", blue)
+button1 = Button(5, game_y * 0.8, 100, game_y * 0.85, "New Game", blue)
+button2 = Button(100, game_y * 0.8, 171, game_y * 0.85, "Begin Combat", green)
+
+button_handler1.add_button(button1)
+button_handler1.add_button(button2)
 
 imageTest = Graphic('Defualt_Image.png', 50, 50)
 
-button_handler.draw_buttons()
+graphic_handler1 = GraphicHandler(gameDisplay)
+graphic_handler1.add_graphic(imageTest)
 
-graphic_handler = GraphicHandler(gameDisplay)
-graphic_handler.add_graphic(imageTest)
-graphic_handler.draw_graphics()
+
+# build a scene
+scene_handler = SceneHandler(gameDisplay)
+
+
+scene1 = Scene(button_handler1, graphic_handler1)
+
+scene_handler.add_scene(scene1)
+scene_handler.current_scene = scene1
+
+#scene_handler.draw_scene()
 
 exit_game = False
-
 
 while not exit_game:
 
@@ -165,13 +194,11 @@ while not exit_game:
 
                 # check button area (for now confined to bottom 20% of screen
                 if True:  # mouse_y > game_y * 0.8;  # TODO: efficiency spot
-                    for button in button_handler.button_list:
+                    for button in scene1.button_handler.button_list:
                         if button.within(mouse_x, mouse_y):
                             button.action()
 
-    # gameDisplay.blit(imageTest, [50, 50])
-    #imageTest.draw_graphic(gameDisplay)
-
+    scene_handler.draw_scene()
 
     pygame.display.update()
     clock.tick(60)
