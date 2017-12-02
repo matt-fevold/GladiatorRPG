@@ -30,7 +30,7 @@ class SceneHandler(Handler):
     def __init__(self, screen):
         self.scene_list = []
         self.screen = screen
-        self.current_scene = None #Combat()
+        self.current_scene = None  # Combat()
 
     def draw(self):
         self.current_scene.draw_scene()

@@ -1,5 +1,5 @@
 import pygame
-from GladiatorRPG.Visualizer.scene import *
+from GladiatorRPG.Visualizer.scene import *  # Combat
 
 pygame.init()
 myfont = pygame.font.SysFont("monospace", 15)
@@ -14,10 +14,10 @@ blue = (0, 0, 255)
 green = (0, 255, 0)
 button_clicked_color = (50, 50, 50)
 
+
 gameDisplay = pygame.display.set_mode((game_x, game_y))  # TODO change to relative sizing
 pygame.display.set_caption('GladiatorRPG')
 clock = pygame.time.Clock()
-
 
 
 gameDisplay.fill(white)
@@ -41,12 +41,13 @@ graphic_handler1.add_graphic(imageTest)
 scene_handler = SceneHandler(gameDisplay)
 
 
-scene1 = Scene(button_handler1, graphic_handler1)
+# scene1 = Scene(button_handler1, graphic_handler1)
+combat = Combat(gameDisplay)
 
-scene_handler.add_scene(scene1)
-scene_handler.current_scene = scene1
+scene_handler.add_scene(combat)
+scene_handler.current_scene = combat
 
-#scene_handler.draw_scene()
+scene_handler.draw_scene()
 
 exit_game = False
 
@@ -62,7 +63,7 @@ while not exit_game:
 
                 # check button area (for now confined to bottom 20% of screen
                 if True:  # mouse_y > game_y * 0.8;  # TODO: efficiency spot
-                    for button in scene1.button_handler.button_list:
+                    for button in combat.scene.button_handler.button_list:
                         if button.within(mouse_x, mouse_y):
                             button.action()
 

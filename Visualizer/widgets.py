@@ -24,14 +24,16 @@ class Graphic:
 class Button:
     # all a button is is a rectangle, some text, and an action on left click
 
-    def __init__(self, x_1, y_1, x_2, y_2, text, color):
+    def __init__(self, x_1, y_1, width, height, text, color):
         self.name = text
         self.color = color
 
         self.x_1 = x_1
-        self.x_2 = x_2
+
         self.y_1 = y_1
-        self.y_2 = y_2
+
+        self.width = width
+        self.height = height
 
         self.myfont = pygame.font.SysFont("monospace", 15)
 
@@ -39,21 +41,21 @@ class Button:
 
     def draw_button(self, screen):
         pygame.draw.rect(screen, self.color, (self.x_1, self.y_1,
-                                              self.x_2, self.y_2))
+                                              self.width, self.height))
 
         self.draw_text(screen)
 
     def draw_text(self, screen):
         label = self.myfont.render(self.name, 1, black)
-        center_x = (self.x_2 - self.x_1) / 2 + self.x_1
-        center_y = (self.y_2 - self.y_1) / 2 + self.y_1
+        center_x = self.x_1 + (self.width / 2)  # (self.width - self.x_1) / 2 + self.x_1
+        center_y = self.y_1 + (self.height / 2)  #  + self.y_1
 
         screen.blit(label, (center_x, center_y))
 
     # TODO make clicking better, seems only clicks work on left side.
     def within(self, mouse_click_x, mouse_click_y):
-        if self.x_1 <= mouse_click_x <= self.x_2:
-            if self.y_1 < mouse_click_y <= self.y_2:
+        if self.x_1 <= mouse_click_x <= self.x_1 + self.width:
+            if self.y_1 < mouse_click_y <= self.y_1 + self.height:
 
                 return True
 
